@@ -13,8 +13,8 @@ public class Main {
         dbManager.createTablePipelines();
         List<Pipeline> pipelines = IOUtils.readInputFile("input.csv");
         dbManager.insertAllPipelines(pipelines);
-        IOUtils.createRouteFile(dbManager, dbManager.findAllPipelines(), "output.csv");
-
+        IOUtils.createOutputFile(dbManager, dbManager.findAllPipelines(), "output.csv");
+        dbManager.uploadAllFilesToDB();
     }
 
 }

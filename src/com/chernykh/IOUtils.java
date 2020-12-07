@@ -34,7 +34,7 @@ public class IOUtils {
         return false;
     }
 
-    public static boolean createRouteFile(DBManager dbManager, List<Pipeline> pipelines, String path) {
+    public static boolean createOutputFile(DBManager dbManager, List<Pipeline> pipelines, String path) {
         try {
             FileWriter csvWriter = new FileWriter(path);
             csvWriter.append("ROUTE EXISTS");
@@ -51,8 +51,8 @@ public class IOUtils {
                     csvWriter.append("FALSE;");
                 } else {
                     csvWriter.append("TRUE;");
-                    csvWriter.append(Integer.toString(routeLength));
                 }
+                csvWriter.append(Integer.toString(routeLength));
                 csvWriter.append("\n");
             }
 

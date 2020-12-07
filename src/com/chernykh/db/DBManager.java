@@ -1,6 +1,7 @@
 package com.chernykh.db;
 
 import com.chernykh.db.entity.Pipeline;
+import org.h2.tools.Csv;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -325,10 +326,39 @@ public class DBManager {
             createTableSQL(SQL_CREATE_INPUT_TABLE_CSV);
             createTableSQL(SQL_CREATE_ROUTES_TABLE_CSV);
             createTableSQL(SQL_CREATE_OUTPUT_TABLE_CSV);
+            addCSVElements("input.csv");
+            addCSVElements("routes.csv");
+            addCSVElements("output.csv");
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void addCSVElements(String path) throws SQLException {
+        Statement stmt = null;
+        String sql = "INSERT INTO " + path.substring(0, path.length() - 4) + "(`";
+
+        ResultSet rs = new Csv().read(path, null, null);
+        ResultSetMetaData meta = rs.getMetaData();
+        int noOfCols = meta.getColumnCount();
+        for (int i = 0; i < noOfCols; i++) {
+            System.out.print(meta.getColumnLabel(i + 1));
+            sql += meta.getColumnLabel(i + 1).replaceAll(";", "`,`");
+        }
+        sql += "`) VALUES (";
+        while (rs.next()) {
+            System.out.println();
+            String tempSql = sql;
+            for (int i = 0; i < noOfCols; i++) {
+                System.out.print(rs.getString(i + 1));
+                tempSql += rs.getString(i + 1) + ")";
+            }
+            tempSql = tempSql.replaceAll(";", ",");
+            stmt = con.createStatement();
+            stmt.executeUpdate(tempSql);
+        }
+        System.out.println();
     }
 }
